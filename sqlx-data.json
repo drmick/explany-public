@@ -1,0 +1,664 @@
+{
+  "db": "PostgreSQL",
+  "07930d981e759788106fa063f9cf35d61bda48c58435f7d716d2cbfd63ee6a36": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            delete\n            from spec_services_specializations s\n            where s.spec_id = $1 and s.service_id = $2\n            "
+  },
+  "07fa48b764d008674b0352706f32870de94d176603e5e9b674fff138e41b655f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "institution",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "major",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "graduate",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "month_from",
+          "ordinal": 4,
+          "type_info": "Int4"
+        },
+        {
+          "name": "year_from",
+          "ordinal": 5,
+          "type_info": "Int4"
+        },
+        {
+          "name": "month_to",
+          "ordinal": 6,
+          "type_info": "Int4"
+        },
+        {
+          "name": "year_to",
+          "ordinal": 7,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        null,
+        null,
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            select s.id, institution, major, graduate\n                , extract(month from date_from)::int4 month_from\n                , extract(year from date_from)::int4 year_from\n                , extract(month from date_to)::int4 month_to\n                , extract(year from date_to)::int4 year_to\n                from spec_educations s\n                where s.spec_id = $1\n                and s.id = $2\n            "
+  },
+  "11e73984cd1db3b180aa1d3a30ced1401426d8a1a79bec0cb692f6ac2ee95bfb": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Date",
+          "Date",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n             insert into spec_educations(institution, major, graduate, date_from, date_to, spec_id)\n             values ($1, $2, $3, $4, $5, $6)\n            "
+  },
+  "13a280e29d8e676a89422aa09f7c93379f8e0d3dc6fe4c1c49d39a1cb5da91b1": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Text",
+          "Text",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            /* meet_id new_status role user_id */\n            update meets as m\n            set status_id = $2\n            where id = $1\n              and exists(\n                    select 1\n                    from meet_status_flow f\n                    where f.parent_status_id = m.status_id\n                      and f.status_id = $2\n                      and f.role_id = $3\n                )\n              and (user_id = $4 or spec_id = $4)\n        "
+  },
+  "168611b05530eb68104de4296c22ef7c96735f269a97880c8fe953e855991106": {
+    "describe": {
+      "columns": [
+        {
+          "name": "first_name!",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "last_name!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "middle_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "people_id!",
+          "ordinal": 3,
+          "type_info": "Int4"
+        },
+        {
+          "name": "avatar_thumb_url",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "spec_title!",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "institution?",
+          "ordinal": 6,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n               select t.first_name as \"first_name!\",\n               t.last_name as \"last_name!\",\n               t.middle_name,\n               t.id as \"people_id!\",\n               t.avatar_thumb_url,\n               s.spec_title as \"spec_title!\",\n               e.institution as \"institution?\"\n                from spec t\n                 join specs_services us\n                      on us.spec_id = t.id\n                 join services s on s.id = us.service_id\n                 left join spec_educations e\n                           on e.spec_id = us.spec_id\n        "
+  },
+  "1bca933142cc4a33efb58048cfa2e13cf6388f8b99e284136cb6217855d80187": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            delete from spec_educations\n                where id = $1\n                and spec_id = $2\n            "
+  },
+  "2fdf2b0cb6553061ca82697e9198e584bb5fef1033dbec52cd0318fbb2c52f4a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int8",
+          "Int8"
+        ]
+      }
+    },
+    "query": "\n                delete from calendar t\n                where t.spec_id = $1\n                  and t.range && tsrange(to_timestamp(cast($2 as bigint))::timestamp,\n                                         to_timestamp(cast($3 as bigint))::timestamp, '[)')\n                  and upper(t.range) > now()\n            "
+  },
+  "479afd1ff339cc496f6748508a546bf571f99e5d55c8e14507945ed8ef9edfbe": {
+    "describe": {
+      "columns": [
+        {
+          "name": "specialization_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "title!",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            select sss.specialization_id, coalesce(s.spec_title, s.name) as \"title!\"\n                from spec_services_specializations sss\n                 join services s\n                 on s.id = sss.specialization_id\n                where sss.spec_id = $1 and sss.service_id = $2\n            "
+  },
+  "4fc793b569f7d1c38ad7c57569eb4f2dc0289f5e625d46557716c5a4b59e8c41": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "institution",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "major",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "graduate",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "month_from!",
+          "ordinal": 4,
+          "type_info": "Int4"
+        },
+        {
+          "name": "year_from!",
+          "ordinal": 5,
+          "type_info": "Int4"
+        },
+        {
+          "name": "month_to!",
+          "ordinal": 6,
+          "type_info": "Int4"
+        },
+        {
+          "name": "year_to!",
+          "ordinal": 7,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        null,
+        null,
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            select s.id as \"id!\",\n            institution,\n            major,\n            graduate\n            , extract(month from date_from)::int4 as \"month_from!\"\n            , extract(year from date_from)::int4 as \"year_from!\"\n            , extract(month from date_to)::int4 as \"month_to!\"\n            , extract(year from date_to)::int4 as \"year_to!\"\n            from spec_educations s\n            where s.spec_id = $1\n            order by s.date_to asc, s.date_from asc\n            "
+  },
+  "56fb5babc7462d9837478a555f61240e4e5a7c10403ad56c9c5eabf136abe31c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n                update spec\n                set last_name  = $1,\n                    first_name = $2,\n                    middle_name = $3\n                where id = $4\n            "
+  },
+  "62b4d471a7caf3d3b6fe885827f6fea74d414eed4e59e1be934c6d08c709b856": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Date",
+          "Date",
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n                update spec_educations\n                set institution = $1,\n                    major = $2,\n                    graduate = $3,\n                    date_from = $4,\n                    date_to = $5\n                where spec_id = $6\n                and id = $7\n            "
+  },
+  "6851572e580c100cccec6fb75e285b5e61745dfac0d99cb6fc732c4600e73e93": {
+    "describe": {
+      "columns": [
+        {
+          "name": "from!",
+          "ordinal": 0,
+          "type_info": "Int8"
+        },
+        {
+          "name": "to!",
+          "ordinal": 1,
+          "type_info": "Int8"
+        },
+        {
+          "name": "is_prev!",
+          "ordinal": 2,
+          "type_info": "Bool"
+        },
+        {
+          "name": "is_next!",
+          "ordinal": 3,
+          "type_info": "Bool"
+        },
+        {
+          "name": "is_available!",
+          "ordinal": 4,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int8",
+          "Int4",
+          "Int4",
+          "Float8"
+        ]
+      }
+    },
+    "query": "\n                select\n                       (extract(epoch from ag2.stime) * 1000)::bigint as \"from!\",\n                       (extract(epoch from ag2.etime) * 1000)::bigint as \"to!\",\n                       ag2.rank = $3 - 1 as \"is_prev!\",\n                       ag2.rank = $4 + 1 as \"is_next!\",\n                       case\n                           when (select count(1)\n                                 from meets am\n                                 where am.range && tsrange(ag2.stime, ag2.etime)\n                                   and am.spec_id = ag2.spec_id) = 0 then true\n                           else false end \"is_available!\"\n                        from (select ag.*,\n                             dense_rank() over (order by DATE(d - $5 * interval '1 minutes')) rank\n                      from (SELECT t.range\n                                 , t.spec_id\n                                 , CASE WHEN lower(t.range) = d THEN d ELSE d END                         AS stime\n                                 , CASE WHEN upper(t.range) = d THEN d ELSE d + interval '50 minutes' END AS etime\n                                 , d\n\n                            FROM calendar t\n                               , LATERAL (SELECT d\n                                          FROM generate_series(lower(t.range),\n                                                               upper(t.range), interval '1h') d\n                                ) d\n                            where t.spec_id = $1\n                              and (extract(epoch from upper(t.range)) * 1000)::bigint > $2) ag\n                      where ag.stime != ag.etime) ag2\n                where ag2.rank between $3 - 1 and $4 + 1\n                order by \"from!\"\n                "
+  },
+  "880f67a2abe2620b059740a1d7d7dbbfe5c39ecfb9b637ce7c37dc351de42f20": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "title!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "from!",
+          "ordinal": 2,
+          "type_info": "Int8"
+        },
+        {
+          "name": "to!",
+          "ordinal": 3,
+          "type_info": "Int8"
+        },
+        {
+          "name": "status_id!",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "status_title!",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "spec_last_name!",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "spec_first_name!",
+          "ordinal": 7,
+          "type_info": "Text"
+        },
+        {
+          "name": "spec_avatar_thumb_url",
+          "ordinal": 8,
+          "type_info": "Text"
+        },
+        {
+          "name": "room!",
+          "ordinal": 9,
+          "type_info": "Text"
+        },
+        {
+          "name": "user_first_name!",
+          "ordinal": 10,
+          "type_info": "Text"
+        },
+        {
+          "name": "service_name!",
+          "ordinal": 11,
+          "type_info": "Text"
+        },
+        {
+          "name": "actions!",
+          "ordinal": 12,
+          "type_info": "TextArray"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        null,
+        null,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        null,
+        true,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Text",
+          "Int4"
+        ]
+      }
+    },
+    "query": "select m.id as \"id!\",\n       m.title as \"title!\",\n       (extract(epoch from lower(m.range)) * 1000)::bigint as \"from!\",\n       (extract(epoch from upper(m.range)) * 1000)::bigint as \"to!\",\n       m.status_id as \"status_id!\",\n       ms.title_ru as \"status_title!\",\n       sp.last_name as \"spec_last_name!\",\n       sp.first_name as \"spec_first_name!\",\n       sp.avatar_thumb_url as \"spec_avatar_thumb_url\",\n       m.room as \"room!\",\n       u.first_name || ' ' ||u.last_name  as \"user_first_name!\",\n       s.name as \"service_name!\",\n        (select coalesce(array_agg(mf.status_id), '{}') from meet_status_flow  mf\n       where mf.parent_status_id = m.status_id and mf.role_id = $2 ) as \"actions!\"\n\nfrom meets m\njoin meet_statuses ms\non ms.id = m.status_id\njoin spec sp\non sp.id = m.spec_id\njoin services s\non m.service_id = s.id\njoin users u on m.user_id = u.id\nwhere m.id = coalesce($3, m.id)\nand (m.user_id = $1 or m.spec_id = $1)\norder by case when m.status_id = 'Canceled' then  -1 when m.status_id = 'Finished' then 0 else 1 end desc,\n    lower(m.range)\n"
+  },
+  "8cdd1ccea66c99c461406d63dfbfa1df345fcb83832b7ad0c01517bb5bec31b3": {
+    "describe": {
+      "columns": [
+        {
+          "name": "last_name",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "first_name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "middle_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "avatar_url",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "avatar_thumb_url",
+          "ordinal": 4,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            select\n                t.last_name,\n                t.first_name,\n                t.middle_name,\n                t.avatar_url,\n                t.avatar_thumb_url from spec t\n                where t.id = $1\n            "
+  },
+  "9e114cd057204d25bbe5043e95892095327eb9b9bbf36b67910c6fe3937151db": {
+    "describe": {
+      "columns": [
+        {
+          "name": "service_id!",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "title!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "icon!",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "doc_verified!",
+          "ordinal": 3,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n                select us.service_id as \"service_id!\",\n                s.spec_title as \"title!\",\n                s.icon as \"icon!\",\n                false  as \"doc_verified!\"\n                from specs_services us\n                         join services s\n                              on s.id = us.service_id\n                where us.spec_id = $1\n                order by s.spec_title asc\n            "
+  },
+  "ac895385e1d4b865e8722a4874f5eba1852adedff9b225e988516931deca7661": {
+    "describe": {
+      "columns": [
+        {
+          "name": "start!",
+          "ordinal": 0,
+          "type_info": "Int8"
+        },
+        {
+          "name": "end!",
+          "ordinal": 1,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int8",
+          "Int8"
+        ]
+      }
+    },
+    "query": "\n                select (extract(epoch from lower(t.range)))::bigint as \"start!\",\n                       (extract(epoch from upper(t.range)))::bigint as \"end!\" from calendar t\n                where t.spec_id = $1\n                and t.range && tsrange(to_timestamp(cast($2 as bigint))::timestamp,\n                    to_timestamp(cast($3 as bigint))::timestamp, '[)')\n                order by (extract(epoch from lower(t.range)))::bigint asc\n            "
+  },
+  "c025db4b0e0b70fdade753ad38c2293555d4908705b4a4b7e9039217aeef7fbd": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int8",
+          "Int8"
+        ]
+      }
+    },
+    "query": "\n                    insert into calendar(spec_id, range)\n                    select $1,\n                           tsrange(to_timestamp(cast($2 as bigint))::timestamp,\n                                   to_timestamp(cast($3 as bigint))::timestamp,\n                                   '[)')\n                    where to_timestamp(cast($2 as bigint)) > now()\n                "
+  },
+  "ccfd24448ae82d9b3994ca1957419669aeb3e87840d0db43cf475cded125fca9": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n                update spec\n                set  avatar_url = $1, avatar_thumb_url = $2\n                where id = $3\n            "
+  },
+  "e6e4d43537806bc8cfcdc7f631f92e9c8ca254d3d45c1a344244ef72332ae673": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Float8",
+          "Float8",
+          "Text",
+          "Text",
+          "Text",
+          "Int4",
+          "Int4",
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "--range, title, status_id, price, room, service_id, spec_id, user_id\n                insert into meets(range,\n                                  title,\n                                  price,\n                                  status_id,\n                                  room,\n                                  service_id,\n                                  spec_id,\n                                  user_id,\n                                  specialization_id)\n                values (tsrange(to_timestamp($1)::timestamp, to_timestamp($2)::timestamp),\n                         $3,\n                         (select ss.price\n                          from specs_services ss\n                          where ss.spec_id = $7\n                            and ss.service_id = $6), $4, $5, $6, $7, $8, $9)"
+  },
+  "ec333fa6513e0dd163e32bec334d79d65e141cca206061560240442405d43da6": {
+    "describe": {
+      "columns": [
+        {
+          "name": "service_id!",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "title!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "description!",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "icon!",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n               select s.id as \"service_id!\",\n               s.spec_title as \"title!\",\n               s.spec_description as \"description!\",\n               s.icon as \"icon!\"\n                    from services s\n                    where s.parent_id = 0\n                      and not exists(select 1\n                                     from specs_services us\n                                     where us.service_id = s.id\n                                       and us.spec_id = $1\n                        )\n                    order by s.spec_title\n            "
+  },
+  "f65174f4cd159d398559dfc7a127561d7c1beb7b1144bf7b9427862325c438df": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n                update spec\n                set avatar_url = null, avatar_thumb_url = null\n                where id = $1\n            "
+  }
+}
