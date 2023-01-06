@@ -27,7 +27,7 @@ pub async fn index(
 ) -> Result<Json<Vec<Meet>>, AppError> {
     let current_user = auth_service.get_current_user(&request)?.try_equal(query.user_id)?;
     let mut meets = meet_service.list(current_user.people_id, current_user.role).await?;
-    let _ = meets.iter_mut().for_each(|it| {
+    meets.iter_mut().for_each(|it| {
         if let Some(a) = &it.spec_avatar_thumb_url {
             it.spec_avatar_thumb_url = Some(format!("http://localhost:3100/{}", a))
         }
@@ -130,7 +130,7 @@ pub async fn status(
 ) -> Result<NoContent, AppError> {
     let user = auth_service.get_current_user(&request)?;
     let status = payload.status.clone();
-    let _ = meet_service
+    meet_service
         .change_status(path.id, user.people_id, user.role, status)
         .await?;
     Ok(NoContent)

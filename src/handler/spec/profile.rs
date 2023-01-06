@@ -62,7 +62,7 @@ pub async fn update_main_info(
             user.people_id,
             payload.last_name.as_ref(),
             payload.first_name.as_ref(),
-            payload.middle_name.as_ref().map(|x| &**x),
+            payload.middle_name.as_deref(),
         )
         .await?;
     Ok(NoContent)

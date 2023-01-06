@@ -17,7 +17,7 @@ pub struct SimpleUser {
     pub role: Role,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Apiv2Schema)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Apiv2Schema)]
 pub enum Role {
     Spec,
     User,

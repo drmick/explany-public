@@ -69,7 +69,7 @@ impl actix_web::error::ResponseError for AppError {
             AppError::Argon2Error(ref err) => internal_server_error_response(err),
             AppError::SqlxError(ref err) => match err {
                 sqlx::Error::RowNotFound => not_found_response(),
-                _ => internal_server_error_response(&self),
+                _ => internal_server_error_response(self),
             },
             AppError::JwtError(ref err) => unauthorized_response(&format!("{:?}", err)),
             AppError::HTTPUnauthorized => unauthorized_response("Unauthorized"),
@@ -124,7 +124,7 @@ impl From<ImageError> for AppError {
 impl From<chrono::ParseError> for AppError {
     fn from(errors: chrono::ParseError) -> Self {
         warn!("{}", errors);
-        AppError::HTTPBadRequest("".parse().unwrap())
+        AppError::HTTPBadRequest("".to_string())
     }
 }
 

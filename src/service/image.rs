@@ -18,7 +18,7 @@ impl FileService {
         let full_folder = format!("{}/{}", self.storage_path, folder);
         fs::create_dir_all(&full_folder).await?;
         let full_path = format!("{}/{}.{}", full_folder, filename, filetype);
-        let _ = image.save(&full_path)?;
+        image.save(&full_path)?;
         info!("Saved image: {}", &full_path);
         Ok(format!("{}/{}.{}", folder, filename, filetype))
     }

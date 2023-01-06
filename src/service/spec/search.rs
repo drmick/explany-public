@@ -44,9 +44,9 @@ impl SpecService {
         .fetch_all(&self.pool)
         .await?;
         let mut page = SearchPage { items: res };
-        let _ = page.items.iter_mut().for_each(|it| {
+        page.items.iter_mut().for_each(|it| {
             if let Some(a) = &it.avatar_thumb_url {
-                it.avatar_thumb_url = Some(format!("http://localhost:3100/{}", a))
+                it.avatar_thumb_url = Some(format!("http://localhost:3100/{a}"))
             }
         });
 

@@ -15,7 +15,7 @@ pub struct MeetService {
     pub pool: Pool<Postgres>,
 }
 
-#[derive(Debug, Clone, Deserialize, PartialEq, Serialize, sqlx::Type, Apiv2Schema)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq, Serialize, sqlx::Type, Apiv2Schema)]
 pub enum MeetStatuses {
     PaymentWaiting,
     Finished,
@@ -43,6 +43,7 @@ pub struct Meet {
 }
 
 impl MeetService {
+    #[allow(clippy::too_many_arguments)]
     pub async fn create(
         &self,
         spec_id: PeopleID,

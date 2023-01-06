@@ -48,7 +48,7 @@ impl SpecService {
         Ok(())
     }
 
-    #[warn(clippy::too_many_arguments)]
+    #[allow(clippy::too_many_arguments)]
     pub async fn update_education(
         &self,
         institution: &str,
